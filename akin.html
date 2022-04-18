@@ -5,49 +5,70 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 <title>Map</title>
-<link rel="stylesheet" href="style.css">
-
+<link rel="stylesheet" href="indexx.css">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
+<link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+			crossorigin="anonymous"
+		/>
+  
+    <!-- <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script> -->
+    
 <style>
-   
+  
+  #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+  }
 html {
   scroll-behavior: smooth;
 }
-
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'Calibri', Courier, monospace;
   overflow-y: hidden;
 }
 
 .navbar {
   position: fixed;
   display: flex;
+  
   justify-content: center;
   align-items: center;
-  flex-direction: row;
-  flex-wrap: wrap;
-  background-color: #ddd;
-  width: 100%;
-  height: 20px;
+  flex-direction: column;
+  
+  background-color: rgb(171, 174, 173);
+  width: auto;
+  height: auto;
   z-index: 1;
 }
 
 .nav {
+ height: 100%;
   display: flex;
-  justify-content: center;
+  justify-content: right;
+  background-color: rgb(171, 174, 173);
+  background-position: 50px;
   list-style: none;
   margin-right: 0;
-  position: absolute;
-  left: 48%;
+  position: 0;
+  right: 90%;
 }
 
 .logo {
   position: absolute;
-  left: 3%;
+  left: 90%;
   letter-spacing: 1px;
   font-weight: bold;
-  font-size: 35px;
+  font-size: 30px;
+  color: #9000ff;
 }
 
 a {
@@ -65,7 +86,7 @@ a:hover {
 }
 
 a.active {
-  color: #000;
+  color: rgb(141, 2, 255);
   font-weight: bold;
   text-decoration: underline;
   border-radius: 10px;
@@ -80,12 +101,15 @@ a.active {
   height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
+  
 }
 
 .about-area,
 .portfolio-area,
 .services-area,
-.contact-area {
+.weather-area,
+.hiking-area, 
+.population-area{
   position: relative;
   display: flex;
   justify-content: space-around;
@@ -97,8 +121,9 @@ a.active {
 }
 
 .text-part {
-  top: 30%;
-  width: 60%;
+  top: 20%;
+  width: 30%;
+  text-align: left;
 }
 
 h1 {
@@ -114,89 +139,764 @@ p {
 .services-area {
   background: #fefefe;
 }
-
 .portfolio-area,
 .contact-area {
-  background: #262626;
-  color: #fff;
+    background: #ffffff;
+    color: #fff;
 }
-    
+#map {
+        height: 25%;
+        width: 25%;
+        align-items: center;
+      }
+      
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+
+      /* Optional: Makes the sample page fill the window. */
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #floating-panel {
+        position: absolute;
+        top: 110px;
+        left: 1%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: "Roboto", "sans-serif";
+        line-height: 30px;
+        padding-left: 10px;
+      }
+
+/* Set the size of the div element that contains the map */
+#map {
+  height: 400px;
+  /* The height is 400 pixels */
+  width: 100%;
+  /* The width is the width of the web page */
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+::selection{
+  color: #fff;
+  background: #43AFFC;
+}
+.wrapper{
+  width: 400px;
+  background: #fff;
+  border-radius: 7px;
+  box-shadow: 7px 7px 20px rgba(0, 0, 0, 0.05);
+}
+.wrapper header{
+  display: flex;
+  font-size: 21px;
+  font-weight: 500;
+  color: #43AFFC;
+  padding: 16px 15px;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+}
+header i{
+  font-size: 0em;
+  cursor: pointer;
+  margin-right: 8px;
+}
+.wrapper.active header i{
+  margin-left: 5px;
+  font-size: 30px;
+}
+.wrapper .input-part{
+  margin: 20px 25px 30px;
+}
+.wrapper.active .input-part{
+  display: none;
+}
+.input-part .info-txt{
+  display: none;
+  font-size: 17px;
+  text-align: center;
+  padding: 12px 10px;
+  border-radius: 7px;
+  margin-bottom: 15px;
+}
+.input-part .info-txt.error{
+  color: #721c24;
+  display: block;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+.input-part .info-txt.pending{
+  color: #0c5460;
+  display: block;
+  background: #d1ecf1;
+  border: 1px solid #bee5eb;
+}
+.input-part :where(input, button){
+  width: 100%;
+  height: 55px;
+  border: none;
+  outline: none;
+  font-size: 18px;
+  border-radius: 7px;
+}
+.input-part input{
+  text-align: center;
+  padding: 0 15px;
+  border: 1px solid #ccc;
+}
+.input-part input:is(:focus, :valid){
+  border: 2px solid #43AFFC;
+}
+.input-part input::placeholder{
+  color: #bfbfbf;
+}
+.input-part .separator{
+  height: 1px;
+  width: 100%;
+  margin: 25px 0;
+  background: #ccc;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.separator::before{
+  content: "or";
+  color: #b3b3b3;
+  font-size: 19px;
+  padding: 0 15px;
+  background: #fff;
+}
+.input-part button{
+  color: #fff;
+  cursor: pointer;
+  background: #43AFFC;
+  transition: 0.3s ease;
+}
+.input-part button:hover{
+  background: #1d9ffc;
+}
+
+.wrapper .weather-part{
+  display: none;
+  margin: 30px 0 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.wrapper.active .weather-part{
+  display: flex;
+}
+.weather-part img{
+  max-width: 125px;
+}
+.weather-part .temp{
+  display: flex;
+  font-weight: 500;
+  font-size: 72px;
+}
+.weather-part .temp .numb{
+  font-weight: 600;
+}
+.weather-part .temp .deg{
+  font-size: 40px;
+  display: block;
+  margin: 10px 5px 0 0;
+}
+.weather-part .weather{
+  font-size: 21px;
+  text-align: center;
+  margin: -5px 20px 15px;
+}
+.weather-part .location{
+  display: flex;
+  font-size: 19px;
+  padding: 0 20px;
+  text-align: center;
+  margin-bottom: 30px;
+  align-items: flex-start;
+}
+.location i{
+  font-size: 22px;
+  margin: 4px 5px 0 0;
+}
+.weather-part .bottom-details{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  border-top: 1px solid #ccc;
+}
+.bottom-details .column{
+  display: flex;
+  width: 100%;
+  padding: 15px 0;
+  align-items: center;
+  justify-content: center;
+}
+.column i{
+  color: #5DBBFF;
+  font-size: 40px;
+}
+.column.humidity{
+  border-left: 1px solid #ccc;
+}
+.column .details{
+  margin-left: 3px;
+}
+.details .temp, .humidity span{
+  font-size: 18px;
+  font-weight: 500;
+  margin-top: -3px;
+}
+.details .temp .deg{
+  margin: 0;
+  font-size: 17px;
+  padding: 0 2px 0 1px;
+}
+.column .details p{
+  font-size: 14px;
+  margin-top: -6px;
+}
+.humidity i{
+  font-size: 37px;
+}
+
+:root {
+  --primary-color: #5fbaa7;
+}
+
+.services-area {
+  box-sizing: border-box;
+}
+
+.services-area {
+  background-color: #f4f4f4;
+  font-family: Arial, Helvetica, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+h1 {
+  color: var(--primary-color);
+}
+
+p {
+  text-align: center;
+}
+
+.btn {
+  color: #fff;
+  background: var(--primary-color);
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 12px;
+  padding: 5px 12px;
+}
+
+.money-img {
+  width: 150px;
+}
+
+.currency {
+  padding: 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.currency select {
+  padding: 10px 20px 10px 10px;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: 1px solid #dedede;
+  font-size: 16px;
+  background: transparent;
+  background-image: url('https://th.bing.com/th?q=Money+Exchange+Clip+Art&w=120&h=120&c=1&rs=1&qlt=90&cb=1&dpr=1.25&pid=InlineBlock&mkt=en-XA&cc=IQ&setlang=en&adlt=strict&t=1&mw=247');
+  background-position: right 10px top 50%, 0, 0;
+  background-size: 12px auto, 100%;
+  background-repeat: no-repeat;
+}
+
+.currency input {
+  border: 0;
+  background: transparent;
+  font-size: 30px;
+  text-align: right;
+}
+
+.swap-rate-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rate {
+  color: var(--primary-color);
+  font-size: 14px;
+  padding: 0 10px;
+}
+
+select:focus,
+input:focus,
+button:focus {
+  outline: 0;
+}
+
+@media (maz-width: 600px) {
+  .currency input {
+    width: 200px;
+  }
+}
     </style>
+ <link rel="stylesheet" href="https://js.arcgis.com/4.23/esri/themes/light/main.css" />
+ <script src="https://js.arcgis.com/4.23/"></script>
+ <script>
+   require(["esri/Map", "esri/views/SceneView"], (Map, SceneView) => {
+     const map = new Map({
+       basemap: "topo-vector",
+       ground: "world-elevation"
+     });
+     const view = new SceneView({
+       container: "viewDiv", // Reference to the scene div created in step 5
+       map: map, // Reference to the map object created before the scene
+       scale: 50000000, // Sets the initial scale to 1:50,000,000
+       center: [-101.17, 21.78] // Sets the center point of view with lon/lat
+     });
+   });
+ </script>
+    
+ 
+
+     <script>
+      function initMap() {
+
+       
+
+        const directionsService = new google.maps.DirectionsService();
+        const directionsRenderer = new google.maps.DirectionsRenderer();
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 13,
+          mapId: '91259733ef841470',
+          center: { lat: 35.580482, lng: 45.385355 },
+          mapTypeControlOptions: {
+          mapTypeIds: ["roadmap", "satellite", "hybrid", "terrain", "styled_map"],
+           },
+        });
+        
+        directionsRenderer.setMap(map);
+
+        const onChangeHandler = function () {
+          calculateAndDisplayRoute(directionsService, directionsRenderer);
+        };
+        document
+          .getElementById("start")
+          .addEventListener("change", onChangeHandler);
+        document
+          .getElementById("end")
+          .addEventListener("change", onChangeHandler);
+
+        //dyarikrdny lat  w lon  katek klick lasar map aka akait
+        google.maps.event.addListener(map, "click", (event) => {
+        alert(" lan : "+ event.latLng.lat()+ " , lon : " + event.latLng.lng())
+        });
+        
+        //addy marker bo aw locationay click lasar akait
+        google.maps.event.addListener(map, "click", (event) => {
+        new google.maps.Marker({
+        position: event.latLng,
+        label:"L",
+        map: map,
+     });
+    });
+
+    infoWindow = new google.maps.InfoWindow();
+
+const locationButton = document.createElement("button");
+locationButton.setAttribute("id","button_geolocation");
+
+locationButton.textContent = "  Click to get your location";
+locationButton.classList.add("custom-map-control-button");
+map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+locationButton.addEventListener("click", () => {
+  // Try HTML5 geolocation.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(" you");
+        infoWindow.open(map);
+        map.setCenter(pos);
+      },
+      () => {
+        handleLocationError(true, infoWindow, map.getCenter());
+      }
+    );
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
+});
+
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+infoWindow.setPosition(pos);
+infoWindow.setContent(
+  browserHasGeolocation
+    ? "Error: The Geolocation service failed."
+    : "Error: Your browser doesn't support geolocation."
+);
+infoWindow.open(map);
+
+
+}
+
+      function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+        directionsService.route(
+          {
+            origin: {
+              query: document.getElementById("start").value,
+            },
+            destination: {
+              query: document.getElementById("end").value,
+            },
+            travelMode: google.maps.TravelMode.DRIVING,
+          },
+          (response, status) => {
+            if (status === "OK") {
+              directionsRenderer.setDirections(response);
+            } else {
+              window.alert("Directions request failed due to " + status);
+            }
+          }
+        );
+      }
+    </script>
+
+
     
     </head>
     <body>
+          <!--navigation bar-->
 
+          <h1 class="logo">WEB MAP</h1>
         <header class="navbar">
-            
-            <ul class="nav">
+                <ul class="nav">
                 <li><a href="#home" class="active">Home</a></li>
-                <li><a href="#about">Page2</a></li>
-                <li><a href="#portfolio">Page3</a></li>
-                <li><a href="#services">Page4</a></li>
-                
-            </ul>
-        </header>
+                <li><a href="#about">Map</a></li>
+                <li><a href="#portfolio">Weather</a></li>
+                <li><a href="#services">Exchangemoney</a></li>
+                <li><a href="#weather">weather</a></li>
+                <li><a href="#hike">hiking</a></li>
+                <li><a href="#population">population</a></li>
+
+
+                  </ul>
+                           </header>
+                           <!--page home-->
         <section class="banner-area" id="home">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d6835103.105026606!2d43.685897999999995!3d33.
-            228442!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1spalace%20of%20fine%20arts%20theatre!5e0!3m2!1sen!2siq!4v1649099731036!5m2!1sen!2siq"
-             width="600" height="300" style="border:2px solid black";></iframe>
+           <!--map1-->
+            <iframe src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d11855.108671872!2d-122.39761130000001!3d37.799294!3m2!1i1024!2i768!4f13.1!5e1!3m2!1sen!2siq!4v1649738408390!5m2!1sen!2siq"
+             width="600" height="300" style="border:2px solid black;margin-top: 50px;;margin-left: 40px;" scrolling="yes"></iframe>
         
-        
-             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26028.447513174327!2d44.41582339915764!3d35.
-             36666518718806!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x155527b4124e0e01%3A0x344c493dd592e51a!2sRajabat!5e0!3m2!1sen!
-             2siq!4v1649101269869!5m2!1sen!2siq" width="600" height="300" style="border:2px solid black;"></iframe>
+              <!--map2-->
+              <iframe src="https://www.newearthmaps.com/?t=satellite-streets-v11" width="600" height="300" 
+              style="border:2px solid black;margin: top 50px;margin-left: 40px;" scrolling="yes"></iframe>
             
-             <iframe height="300" width="600" style="border:2px solid black"  marginwidth="0" marginheight="0" 
-             src="https://www.mapquest.com/embed/iraq/sulaymaniyah/sulaymaniyah/parki-azadi-street-35.567190,45.433460?center=35.5641,
-             45.432599999999994&zoom=15&maptype=map"></iframe>
-             <iframe width="600" height="300" style="border:2px solid black;" src="https://www.bing.com/maps/embed?h=250&w=600&cp=35.552898586492105~45.416107177734375&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8" scrolling="no">
-            </iframe>
+             <!--map3-->
+             <iframe height="300" width="600" style="border: 2px solid black;margin-left: 40px;margin-bottom: auto;margin-top: auto;"
+             src="https://www.mapquest.com/embed?center=35.5641,45.432599999999994&zoom=13&maptype=map"></iframe>
 
-        </section>
+              <!--map4-->
+              <iframe width="600" height="300" style="border:2px solid black;margin-left: 40px;margin-bottom: auto;margin-top: 20px;"
+               src="https://www.bing.com/maps/embed?h=300&w=600&cp=35.55848
+              479575383~45.3900146484724&lvl=11&typ=d&sty=r&src=SHELL&FORM=MBEDV8" scrolling="yes">
+              </iframe>
+              
+           </section>
+           
+        <!--page2-->
         <section class="about-area" id="about">
-            <div class="text-part">
-              <iframe height="300" width="600" style="border:2px solid black"  marginwidth="0" marginheight="0" 
-               src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB27mKwip-MDgkuPffl5hcNZiyIrlNCZXs&callback=initMap"></iframe>
-        </section>
-        <section class="portfolio-area" id="portfolio">
-            <div class="text-part">
-                <h1>Portfolio Area</h1>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias fugiat ex mollitia illum similique, optio nobis sint eveniet et! Temporibus nihil corrupti neque in libero quaerat ducimus. Consequatur, iusto debitis!</p>
-            </div>
-        </section>
-        <section class="services-area" id="services">
-        <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB27mKwip-MDgkuPffl5hcNZiyIrlNCZXs"></script>
-        </section>
-
-
-        <section class="contact-area" id="contact">
-          <div id="googleMap" style="width:100%;height:400px;"></div>
-          <script>
-            function myMap() {
-            var mapProp= {
-              center:new google.maps.LatLng(51.508742,-0.120850),
-              zoom:5,
-            };
-            var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-            }
-            </script>
-            
-            <script src="https://maps.googleapis.com/maps/api/js"></script>
-            
-        </section>
-        <script src="script.js"></script>
-   
-
-   
-    <div class="topnav">
-        <a class="active" href="/akin.html">Home</a>
-        <a href="/page2.html">page2</a>
-        <a href="/page3.html">page3</a>
-        <a href="/about.html">About</a>
-      </div>
+          <div  id="floating-panel">
+            <b>Start: </b>
+            <select id="start">
+              <option value="Sulaymaniyah">Sulaymaniyah</option>
+              <option value="Erbil">Erbil</option>
+              <option value="Kirkuk">Kirkuk</option>
+              <option value="Byara">Byara</option>
+              <option value="Halabja">Halabja</option>
+              <option value="Kalar">Kalar</option>
+              <option value="Duhok">Duhok</option>
+              <option value="Darbandikhan">Darbandikhan</option>
+              <option value="Shaqlawa">Shaqlawa</option>
+              <option value="Tawella">Tawella</option>
+              
+            </select>
+            <b >End: </b>
+            <select id="end">
+              <option value="Sulaymaniyah">Sulaymaniyah</option>
+              <option value="Erbil">Erbil</option>
+              <option value="Kirkuk">Kirkuk</option>
+              <option value="Byara">Byara</option>
+              <option value="Halabja">Halabja</option>
+              <option value="Kalar">Kalar</option>
+              <option value="Duhok">Duhok</option>
+              <option value="Darbandikhan">Darbandikhan</option>
+              <option value="Shaqlawa">Shaqlawa</option>
+              <option value="Tawella">Tawella</option>
+            </select>
+          </div>
+          <div id="map"></div>
       
+          <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+          <script
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&libraries=&v=weekly"
+            async
+          ></script>
+            
+           </section>
+       
+       
+       <!--page3-->
+        <section class="portfolio-area" id="portfolio">
+          <div class="wrapper">
+            <header><i class='bx bx-left-arrow-alt'></i>Weather App</header>
+            <section class="input-part">
+              <p class="info-txt"></p>
+              <div class="content">
+                <input type="text" spellcheck="false" placeholder="Enter city name" required>
+                <div class="separator"></div>
+                <button>Get Device Location</button>
+              </div>
+            </section>
+          
+            <section class="weather-part">
+              <img src="icons/cloud.svg" alt="Weather Icon">
+              <div class="temp">
+                <span class="numb">13</span>
+                <span class="deg">°</span>C
+              </div>
+              <div class="weather">Broken Clouds</div>
+              <div class="location">
+                <i class='bx bx-map'></i>
+                <span>Kathmandu, Nepal</span>
+              </div>
+              <div class="bottom-details">
+                <div class="column feels">
+                  <i class='bx bxs-thermometer'></i>
+                  <div class="details">
+                    <div class="temp">
+                      <span class="numb-2">17</span>
+                      <span class="deg">°</span>C
+                    </div>
+                    <p>Feels like</p>
+                  </div>
+                </div>
+                <div class="column humidity">
+                  <i class='bx bxs-droplet-half'></i>
+                  <div class="details">
+                    <span class="numb">84</span>
+                    <p>Humidity</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          
+         
+      
+          </div>
+              <script src="script.js"></script>
+  
+        </section>
 
-    
+        <!--page4-->
+        <section class="services-area" id="services">
+          <img src="OIP.jpg" alt="" class="money-img" />
+          <h1>Exchange Rate Calculator</h1>
+          <p>Choose the currency and the amounts to get the exchange rate</p>
+      
+          <div class="container">
+            <div class="currency">
+              <select id="currency-one">
+                <option value="AED">AED</option>
+                <option value="ARS">ARS</option>
+                <option value="AUD">AUD</option>
+                <option value="BGN">BGN</option>
+                <option value="BRL">BRL</option>
+                <option value="BSD">BSD</option>
+                <option value="CAD">CAD</option>
+                <option value="CHF">CHF</option>
+                <option value="CLP">CLP</option>
+                <option value="CNY">CNY</option>
+                <option value="COP">COP</option>
+                <option value="CZK">CZK</option>
+                <option value="DKK">DKK</option>
+                <option value="DOP">DOP</option>
+                <option value="EGP">EGP</option>
+                <option value="EUR">EUR</option>
+                <option value="FJD">FJD</option>
+                <option value="GBP">GBP</option>
+                <option value="GTQ">GTQ</option>
+                <option value="HKD">HKD</option>
+                <option value="HRK">HRK</option>
+                <option value="HUF">HUF</option>
+                <option value="IDR">IDR</option>
+                <option value="ILS">ILS</option>
+                <option value="INR">INR</option>
+                <option value="ISK">ISK</option>
+                <option value="JPY">JPY</option>
+                <option value="KRW">KRW</option>
+                <option value="KZT">KZT</option>
+                <option value="MXN">MXN</option>
+                <option value="MYR">MYR</option>
+                <option value="NOK">NOK</option>
+                <option value="NZD">NZD</option>
+                <option value="PAB">PAB</option>
+                <option value="PEN">PEN</option>
+                <option value="PHP">PHP</option>
+                <option value="PKR">PKR</option>
+                <option value="PLN">PLN</option>
+                <option value="PYG">PYG</option>
+                <option value="RON">RON</option>
+                <option value="RUB">RUB</option>
+                <option value="SAR">SAR</option>
+                <option value="SEK">SEK</option>
+                <option value="SGD">SGD</option>
+                <option value="THB">THB</option>
+                <option value="TRY">TRY</option>
+                <option value="TWD">TWD</option>
+                <option value="UAH">UAH</option>
+                <option value="USD" selected>USD</option>
+                <option value="UYU">UYU</option>
+                <option value="VND">VND</option>
+                <option value="ZAR">ZAR</option>
+              </select>
+              <input type="number" id="amount-one" placeholder="0" value="1" />
+            </div>
+      
+            <div class="swap-rate-container">
+              <button class="btn" id="swap">Swap</button>
+              <div class="rate" id="rate"></div>
+            </div>
+      
+            <div class="currency">
+              <select id="currency-two">
+                <option value="AED">AED</option>
+                <option value="ARS">ARS</option>
+                <option value="AUD">AUD</option>
+                <option value="BGN">BGN</option>
+                <option value="BRL">BRL</option>
+                <option value="BSD">BSD</option>
+                <option value="CAD">CAD</option>
+                <option value="CHF">CHF</option>
+                <option value="CLP">CLP</option>
+                <option value="CNY">CNY</option>
+                <option value="COP">COP</option>
+                <option value="CZK">CZK</option>
+                <option value="DKK">DKK</option>
+                <option value="DOP">DOP</option>
+                <option value="EGP">EGP</option>
+                <option value="EUR" selected>EUR</option>
+                <option value="FJD">FJD</option>
+                <option value="GBP">GBP</option>
+                <option value="GTQ">GTQ</option>
+                <option value="HKD">HKD</option>
+                <option value="HRK">HRK</option>
+                <option value="HUF">HUF</option>
+                <option value="IDR">IDR</option>
+                <option value="ILS">ILS</option>
+                <option value="INR">INR</option>
+                <option value="ISK">ISK</option>
+                <option value="JPY">JPY</option>
+                <option value="KRW">KRW</option>
+                <option value="KZT">KZT</option>
+                <option value="MXN">MXN</option>
+                <option value="MYR">MYR</option>
+                <option value="NOK">NOK</option>
+                <option value="NZD">NZD</option>
+                <option value="PAB">PAB</option>
+                <option value="PEN">PEN</option>
+                <option value="PHP">PHP</option>
+                <option value="PKR">PKR</option>
+                <option value="PLN">PLN</option>
+                <option value="PYG">PYG</option>
+                <option value="RON">RON</option>
+                <option value="RUB">RUB</option>
+                <option value="SAR">SAR</option>
+                <option value="SEK">SEK</option>
+                <option value="SGD">SGD</option>
+                <option value="THB">THB</option>
+                <option value="TRY">TRY</option>
+                <option value="TWD">TWD</option>
+                <option value="UAH">UAH</option>
+                <option value="USD">USD</option>
+                <option value="UYU">UYU</option>
+                <option value="VND">VND</option>
+                <option value="ZAR">ZAR</option>
+              </select>
+              <input type="number" id="amount-two" placeholder="0" />
+            </div>
+          </div>
+      
+          <script src="script.js"></script>
+        </section>
+        
+   
+
+        <section class="weather-area" id="weather">
+
+        
+ 
+          
+        </section>
+   
+
+        <section class="hiking-area" id="hike">
+          <script type="text/javascript" src="//rf.revolvermaps.com/0/0/8.js?
+          i=5qhnpmzyd16&amp;m=0&amp;c=ff0000&amp;cr1=ffffff&amp;f=arial&amp;l=33"
+           async="async"></script>
+        </section>
+
+        <section class="population-area" id="population">
+
+        
+ 
+          
+        </section>
+       
 
 </body>
 </html>
